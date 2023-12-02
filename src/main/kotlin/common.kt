@@ -23,6 +23,13 @@ fun getNonBlankFileLines(args: Array<String>) =
         .readLines()
         .filter { it.isNotBlank() }
 
+fun interface LineMapper<T> {
+    fun map(line: String): T
+}
+
+fun <T> getEntitiesByLine(args: Array<String>, mapper: LineMapper<T>): List<T> =
+    getNonBlankFileLines(args).map { mapper.map(it) }
+
 data class Coords(val x: Int, val y: Int) {
 
     fun neighbours(maxX: Int, maxY: Int): Set<Coords> = range(x, maxX)

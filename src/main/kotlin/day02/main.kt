@@ -2,11 +2,11 @@ package day02
 
 // https://adventofcode.com/2023/day/2
 
-import getNonBlankFileLines
+import LineMapper
+import getEntitiesByLine
 
 fun main(args: Array<String>) {
-    val games = getNonBlankFileLines(args)
-            .map { line -> GameBuilder(line).build() }
+    val games = getEntitiesByLine(args, GameMapper())
 
     val result = games
             .filter{ game -> game.maxCubes(red = 12, green = 13, blue = 14) }
@@ -34,9 +34,9 @@ data class Game(
 
 data class CubesShown(val red: Int, val green: Int, val blue: Int)
 
-data class GameBuilder(private val line: String) {
+class GameMapper: LineMapper<Game> {
     // Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
-    fun build(): Game {
+    override fun map(line: String): Game {
         val lp = line.split(":")
         val id = lp.first().split(" ").last().toInt()
         val revelations = lp.last().split(";")
