@@ -28,20 +28,5 @@ fun interface LineMapper<T> {
 }
 
 fun <T> getEntitiesByLine(args: Array<String>, mapper: LineMapper<T>): List<T> =
-    getNonBlankFileLines(args).map { mapper.map(it) }
+    getNonBlankFileLines(args).map(mapper::map)
 
-data class Coords(val x: Int, val y: Int) {
-
-    fun neighbours(maxX: Int, maxY: Int): Set<Coords> = range(x, maxX)
-        .flatMap { posX ->
-            range(y, maxY).map { posY -> Coords(posX, posY) }
-                .filter { it != this }
-        }.toSet()
-
-    private fun range(i: Int, max: Int): Set<Int> = (i - 1..i + 1)
-        .filter { it in 0..max }.toSet()
-}
-
-data class Grid(
-    val coords: Set<Coords>,
-)
