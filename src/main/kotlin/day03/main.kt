@@ -4,19 +4,26 @@ package day03
 
 import Cell
 import Coords
+import DayChallenge
 import Grid
 import getNonBlankFileLines
 import toCells
 
-fun main(args: Array<String>) {
-    val cells = getNonBlankFileLines(args).toCells()
-    val engineSchematic = EngineSchematic(cells)
+fun main() = Day03Challenge().run()
 
-    val result1 = engineSchematic.numbersWithNeighbourSymbol().sumOf { it.number }
-    println(result1)
+class Day03Challenge: DayChallenge("03") {
 
-    val result2 = engineSchematic.gearRatios().sum()
-    println(result2)
+    override fun runPart1(filePath: String): Int =
+        EngineSchematic(getNonBlankFileLines(filePath).toCells())
+            .numbersWithNeighbourSymbol().sumOf { it.number }
+
+    override fun runPart2(filePath: String): Int =
+        EngineSchematic(getNonBlankFileLines(filePath).toCells())
+            .gearRatios().sum()
+
+    override fun part1SampleResult(): Int = 4361
+    override fun part2SampleResult(): Int = 467835
+
 }
 
 data class EngineSchematic(private val cells: List<Cell>) {

@@ -2,19 +2,26 @@ package day02
 
 // https://adventofcode.com/2023/day/2
 
+import DayChallenge
 import LineMapper
 import getEntitiesByLine
 
-fun main(args: Array<String>) {
-    val games = getEntitiesByLine(args, GameMapper())
+fun main() = Day02Challenge().run()
 
-    val result = games
+class Day02Challenge: DayChallenge("02") {
+
+    override fun runPart1(filePath: String): Int =
+        getEntitiesByLine(filePath, GameMapper())
             .filter{ game -> game.maxCubes(red = 12, green = 13, blue = 14) }
             .sumOf { game -> game.id }
-    println(result)
 
-    val result2 = games.sumOf { game -> game.power() }
-    println(result2)
+    override fun runPart2(filePath: String): Int =
+        getEntitiesByLine(filePath, GameMapper())
+            .sumOf { game -> game.power() }
+
+    override fun part1SampleResult(): Int = 8
+    override fun part2SampleResult(): Int = 2286
+
 }
 
 data class Game(

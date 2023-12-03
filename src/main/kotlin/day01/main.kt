@@ -2,15 +2,28 @@ package day01
 
 // https://adventofcode.com/2023/day/1
 
+import DayChallenge
 import getNonBlankFileLines
 
-fun main(args: Array<String>) {
-    val result = getNonBlankFileLines(args).sumOf { line ->
-        val numbers = line.emitNumbers()
-        "${numbers.first()}${numbers.last()}".toInt()
-    }
+fun main() = Day01Challenge().run()
 
-    println(result)
+class Day01Challenge: DayChallenge("01") {
+
+    override fun runPart1(filePath: String): Int = getNonBlankFileLines(filePath)
+        .sumOf { line ->
+            val numbers = line.mapNotNull { if (it.isDigit()) it else null }
+            "${numbers.first()}${numbers.last()}".toInt()
+        }
+
+    override fun runPart2(filePath: String): Int = getNonBlankFileLines(filePath)
+        .sumOf { line ->
+            val numbers = line.emitNumbers();
+            "${numbers.first()}${numbers.last()}".toInt()
+        }
+
+    override fun part1SampleResult(): Int = 142
+    override fun part2SampleResult(): Int = 281
+
 }
 
 fun String.emitNumbers(): List<String> =

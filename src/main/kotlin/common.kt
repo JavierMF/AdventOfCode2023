@@ -18,10 +18,16 @@ fun getFileFromFilePath(filePath: String): File {
     return file
 }
 
+fun getNonBlankFileLines(filePath: String) =
+    getFileFromFilePath(filePath)
+        .readLines()
+        .filterNot(String::isBlank)
+
+
 fun getNonBlankFileLines(args: Array<String>) =
     getFileFromArgs(args)
         .readLines()
-        .filter { it.isNotBlank() }
+        .filterNot(String::isBlank)
 
 fun interface LineMapper<T> {
     fun map(line: String): T
@@ -29,4 +35,7 @@ fun interface LineMapper<T> {
 
 fun <T> getEntitiesByLine(args: Array<String>, mapper: LineMapper<T>): List<T> =
     getNonBlankFileLines(args).map(mapper::map)
+
+fun <T> getEntitiesByLine(filePath: String, mapper: LineMapper<T>): List<T> =
+    getNonBlankFileLines(filePath).map(mapper::map)
 
