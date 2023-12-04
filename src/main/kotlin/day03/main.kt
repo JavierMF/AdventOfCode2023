@@ -9,9 +9,13 @@ import Grid
 import getNonBlankFileLines
 import toCells
 
-fun main() = Day03Challenge().run()
+fun main() = Day03Challenge.run()
 
-class Day03Challenge: DayChallenge("03") {
+object Day03Challenge: DayChallenge(
+    day = "03",
+    part1SampleResult = 4361,
+    part2SampleResult = 467835
+) {
 
     override fun runPart1(filePath: String): Int =
         EngineSchematic(getNonBlankFileLines(filePath).toCells())
@@ -20,10 +24,6 @@ class Day03Challenge: DayChallenge("03") {
     override fun runPart2(filePath: String): Int =
         EngineSchematic(getNonBlankFileLines(filePath).toCells())
             .gearRatios().sum()
-
-    override fun part1SampleResult(): Int = 4361
-    override fun part2SampleResult(): Int = 467835
-
 }
 
 data class EngineSchematic(private val cells: List<Cell>) {

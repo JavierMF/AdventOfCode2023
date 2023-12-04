@@ -5,9 +5,13 @@ package day01
 import DayChallenge
 import getNonBlankFileLines
 
-fun main() = Day01Challenge().run()
+fun main() = Day01Challenge.run()
 
-class Day01Challenge: DayChallenge("01") {
+object Day01Challenge: DayChallenge(
+    day = "01",
+    part1SampleResult = 142,
+    part2SampleResult = 281
+) {
 
     override fun runPart1(filePath: String): Int = getNonBlankFileLines(filePath)
         .sumOf { line ->
@@ -20,10 +24,6 @@ class Day01Challenge: DayChallenge("01") {
             val numbers = line.emitNumbers();
             "${numbers.first()}${numbers.last()}".toInt()
         }
-
-    override fun part1SampleResult(): Int = 142
-    override fun part2SampleResult(): Int = 281
-
 }
 
 fun String.emitNumbers(): List<String> =

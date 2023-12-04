@@ -6,9 +6,13 @@ import DayChallenge
 import LineMapper
 import getEntitiesByLine
 
-fun main() = Day02Challenge().run()
+fun main() = Day02Challenge.run()
 
-class Day02Challenge: DayChallenge("02") {
+object Day02Challenge: DayChallenge(
+    day = "02",
+    part1SampleResult = 8,
+    part2SampleResult = 2286
+) {
 
     override fun runPart1(filePath: String): Int =
         getEntitiesByLine(filePath, GameMapper())
@@ -18,10 +22,6 @@ class Day02Challenge: DayChallenge("02") {
     override fun runPart2(filePath: String): Int =
         getEntitiesByLine(filePath, GameMapper())
             .sumOf { game -> game.power() }
-
-    override fun part1SampleResult(): Int = 8
-    override fun part2SampleResult(): Int = 2286
-
 }
 
 data class Game(

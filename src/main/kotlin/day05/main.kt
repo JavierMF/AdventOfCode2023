@@ -1,13 +1,13 @@
-package template
+package day05
 
-// https://adventofcode.com/2023/day/x
+// https://adventofcode.com/2023/day/5
 
 import DayChallenge
 
-fun main() = Day0XChallenge.run()
+fun main() = Day05Challenge.run()
 
-object Day0XChallenge: DayChallenge(
-    day = "0X",
+object Day05Challenge: DayChallenge(
+    day = "05",
     part1SampleResult = -1,
     part2SampleResult = null
 ) {
