@@ -55,8 +55,7 @@ data class Almanac(
 
     fun mapSeeds(): List<Long> = seeds.map { mapSeed(it) }
 
-    fun minInRange(start: Long, end: Long): Long {
-        println("$start-$end")
+    private fun minInRange(start: Long, end: Long): Long {
         return (start until end).minOf { mapSeed(it) }
     }
 
