@@ -12,11 +12,11 @@ object Day0XChallenge: DayChallenge(
     part2SampleResult = null
 ) {
 
-    override fun runPart1(filePath: String): Int {
+    override fun runPart1(filePath: String): Long {
         TODO("Not implemented")
     }
 
-    override fun runPart2(filePath: String): Int  {
+    override fun runPart2(filePath: String): Long  {
         TODO("Not implemented")
     }
 }

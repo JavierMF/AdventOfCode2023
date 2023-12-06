@@ -2,13 +2,13 @@ import kotlin.time.measureTimedValue
 
 abstract class DayChallenge(
     private val day: String,
-    private val part1SampleResult: Int,
-    private val part2SampleResult: Int? = null,
+    private val part1SampleResult: Long,
+    private val part2SampleResult: Long? = null,
 ) {
 
-    abstract fun runPart1(filePath: String): Int
+    abstract fun runPart1(filePath: String): Long
 
-    abstract fun runPart2(filePath: String): Int
+    abstract fun runPart2(filePath: String): Long
 
 
     fun run() {
@@ -19,7 +19,7 @@ abstract class DayChallenge(
 
         val problemFilePath = getFullFilePathFor("problem")
         val (part1ActualResult, elapsedPart1Result) = measureTimedValue {
-            runPart1(part1sampleFilePath)
+            runPart1(problemFilePath)
         }
         println("Part 1 result: $part1ActualResult [$elapsedPart1Result]")
 

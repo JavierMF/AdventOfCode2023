@@ -14,14 +14,14 @@ object Day02Challenge: DayChallenge(
     part2SampleResult = 2286
 ) {
 
-    override fun runPart1(filePath: String): Int =
+    override fun runPart1(filePath: String): Long =
         getEntitiesByLine(filePath, GameMapper())
             .filter{ game -> game.maxCubes(red = 12, green = 13, blue = 14) }
-            .sumOf { game -> game.id }
+            .sumOf { game -> game.id }.toLong()
 
-    override fun runPart2(filePath: String): Int =
+    override fun runPart2(filePath: String): Long =
         getEntitiesByLine(filePath, GameMapper())
-            .sumOf { game -> game.power() }
+            .sumOf { game -> game.power() }.toLong()
 }
 
 data class Game(

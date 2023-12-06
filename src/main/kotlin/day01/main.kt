@@ -13,16 +13,16 @@ object Day01Challenge: DayChallenge(
     part2SampleResult = 281
 ) {
 
-    override fun runPart1(filePath: String): Int = getNonBlankFileLines(filePath)
+    override fun runPart1(filePath: String): Long = getNonBlankFileLines(filePath)
         .sumOf { line ->
             val numbers = line.mapNotNull { if (it.isDigit()) it else null }
-            "${numbers.first()}${numbers.last()}".toInt()
+            "${numbers.first()}${numbers.last()}".toLong()
         }
 
-    override fun runPart2(filePath: String): Int = getNonBlankFileLines(filePath)
+    override fun runPart2(filePath: String): Long = getNonBlankFileLines(filePath)
         .sumOf { line ->
             val numbers = line.emitNumbers();
-            "${numbers.first()}${numbers.last()}".toInt()
+            "${numbers.first()}${numbers.last()}".toLong()
         }
 }
 

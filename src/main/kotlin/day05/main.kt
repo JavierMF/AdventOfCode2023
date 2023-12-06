@@ -13,12 +13,12 @@ object Day05Challenge: DayChallenge(
     part2SampleResult = 46
 ) {
 
-    override fun runPart1(filePath: String): Int {
+    override fun runPart1(filePath: String): Long {
         val almanac = almanacParser(getFileFromFilePath(filePath).readLines())
-        return almanac.mapSeeds().min().toInt()
+        return almanac.mapSeeds().min()
     }
 
-    override fun runPart2(filePath: String): Int  {
+    override fun runPart2(filePath: String): Long  {
         val almanac = almanacParser(getFileFromFilePath(filePath).readLines())
         return almanac.minMapSeedsByRange()
     }
@@ -62,8 +62,8 @@ data class Almanac(
     private fun seedsAsPairs(): List<Pair<Long, Long>> =
         seeds.chunked(2).map { Pair(it[0], it[1]) }
 
-    fun minMapSeedsByRange(): Int =
-        seedsAsPairs().minOf { minInRange(it.first, it.first + it.second) }.toInt()
+    fun minMapSeedsByRange(): Long =
+        seedsAsPairs().minOf { minInRange(it.first, it.first + it.second) }
 
     private fun mapSeed(seed: Long): Long {
         var seedMappingResult = SeedMappingResult(seed, "seed")

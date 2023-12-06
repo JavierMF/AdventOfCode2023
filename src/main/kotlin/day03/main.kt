@@ -17,13 +17,13 @@ object Day03Challenge: DayChallenge(
     part2SampleResult = 467835
 ) {
 
-    override fun runPart1(filePath: String): Int =
+    override fun runPart1(filePath: String): Long =
         EngineSchematic(getNonBlankFileLines(filePath).toCells())
-            .numbersWithNeighbourSymbol().sumOf { it.number }
+            .numbersWithNeighbourSymbol().sumOf { it.number }.toLong()
 
-    override fun runPart2(filePath: String): Int =
+    override fun runPart2(filePath: String): Long =
         EngineSchematic(getNonBlankFileLines(filePath).toCells())
-            .gearRatios().sum()
+            .gearRatios().sum().toLong()
 }
 
 data class EngineSchematic(private val cells: List<Cell>) {

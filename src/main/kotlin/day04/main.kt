@@ -15,13 +15,13 @@ object Day04Challenge: DayChallenge(
     part2SampleResult = 30
 ) {
 
-    override fun runPart1(filePath: String): Int =
-        getEntitiesByLine(filePath, CardMapper()).sumOf { it.points }
+    override fun runPart1(filePath: String): Long =
+        getEntitiesByLine(filePath, CardMapper()).sumOf { it.points }.toLong()
 
-    override fun runPart2(filePath: String): Int  {
+    override fun runPart2(filePath: String): Long  {
         val cards = getEntitiesByLine(filePath, CardMapper())
         val cardsById = cards.associateBy { it.id }
-        return cards.sumOf { card -> getCardsGetBy(card, cardsById) }
+        return cards.sumOf { card -> getCardsGetBy(card, cardsById) }.toLong()
     }
 
     private fun getCardsGetBy(card: Card, cardsById: Map<Int, Card>): Int =
