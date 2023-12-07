@@ -10,30 +10,31 @@ abstract class DayChallenge(
 
     abstract fun runPart2(filePath: String): Long
 
+    private val problemFilePath = getFullFilePathFor("problem")
 
     fun run() {
-        val part1sampleFilePath = getFullFilePathFor("sample")
-        val sampleResult = runPart1(part1sampleFilePath)
-        check(sampleResult == part1SampleResult
-        ) { "$sampleResult is not the expected $part1SampleResult" }
-
-        val problemFilePath = getFullFilePathFor("problem")
-        val (part1ActualResult, elapsedPart1Result) = measureTimedValue {
-            runPart1(problemFilePath)
-        }
-        println("Part 1 result: $part1ActualResult [$elapsedPart1Result]")
+        checkPart("1", "sample", part1SampleResult, this::runPart1)
 
         if (part2SampleResult != null) {
-            val part2sampleFilePath = getFullFilePathFor("sample2")
-            val sample2Result = runPart2(part2sampleFilePath)
-            check(sample2Result == part2SampleResult
-            ) { "$sample2Result is not the expected $part2SampleResult" }
-
-            val (part2ActualResult, elapsedPart2Result) = measureTimedValue {
-                runPart2(problemFilePath)
-            }
-            println("Part 2 result: $part2ActualResult [$elapsedPart2Result]")
+            checkPart("2", "sample2", part2SampleResult, this::runPart2)
         }
+    }
+
+    private fun checkPart(
+        partName: String,
+        sampleFileName: String,
+        sampleSolution: Long,
+        resolver: (String) -> Long
+    ) {
+        val partSampleFilePath = getFullFilePathFor(sampleFileName)
+        val sampleResult = resolver(partSampleFilePath)
+        check(sampleResult == sampleSolution
+        ) { "$sampleResult is not the expected $sampleSolution" }
+
+        val (partActualResult, elapsedPartResult) = measureTimedValue {
+            resolver(problemFilePath)
+        }
+        println("Part $partName result: $partActualResult [$elapsedPartResult]")
     }
 
     private fun getFullFilePathFor(filename: String): String {
