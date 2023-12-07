@@ -14,25 +14,25 @@ object Day07Challenge: DayChallenge(
     part2SampleResult = 5905
 ) {
 
-    override fun runPart1(filePath: String): Long {
-        val game = Game(getEntitiesByLine(filePath, HandMapperP1()))
-        return game.sortedHandsPart1().mapIndexed { index, hand -> ((index + 1) * hand.bid).toLong() }.sum()
-    }
+    override fun runPart1(filePath: String): Long =
+        Game(getEntitiesByLine(filePath, HandMapper(getTypeForHandPart1))).solutionP1()
 
-    override fun runPart2(filePath: String): Long  {
-        val game = Game(getEntitiesByLine(filePath, HandMapperP2()))
-        return game.sortedHandsPart2().mapIndexed { index, hand -> ((index + 1) * hand.bid).toLong() }.sum()
-    }
+    override fun runPart2(filePath: String): Long  =
+        Game(getEntitiesByLine(filePath, HandMapper(getTypeForHandPart2))).solutionP2()
 }
 
 data class Game(private val hands: List<Hand>) {
-    fun sortedHandsPart1(): List<Hand> = hands.sortedWith(Hand.comparatorPart1)
-    fun sortedHandsPart2(): List<Hand> = hands.sortedWith(Hand.comparatorPart2)
+    private fun solution(comparator: Comparator<Hand>): Long = hands
+            .sortedWith(comparator)
+            .mapIndexed { index, hand -> ((index + 1) * hand.bid).toLong() }
+            .sum()
+    fun solutionP1(): Long = solution(Hand.comparatorPart1)
+    fun solutionP2(): Long = solution(Hand.comparatorPart2)
 }
 
-fun getTypeForHandPart1(cards: List<Card>): HandType {
+val getTypeForHandPart1 = { cards: List<Card> ->
     val groupedCards = cards.groupingBy { it }.eachCount()
-    return when(groupedCards.entries.size) {
+    when(groupedCards.entries.size) {
         1 -> HandType.FIVE_OF_KIND
         2 -> if (groupedCards.values.max() == 4) HandType.FOUR_OF_KIND else HandType.FULL_HOUSE
         3 -> if (groupedCards.values.max() == 3) HandType.THREE_KIND else HandType.TWO_PAIR
@@ -41,15 +41,15 @@ fun getTypeForHandPart1(cards: List<Card>): HandType {
     }
 }
 
-fun getTypeForHandPart2(cards: List<Card>): HandType {
-    val groupedCards = cards.groupingBy { it }.eachCount()
-    return when(groupedCards.entries.size) {
-        1 -> HandType.FIVE_OF_KIND
-        2 -> if (groupedCards.values.max() == 4) HandType.FOUR_OF_KIND else HandType.FULL_HOUSE
-        3 -> if (groupedCards.values.max() == 3) HandType.THREE_KIND else HandType.TWO_PAIR
-        4 -> HandType.ONE_PAIR
-        else -> HandType.HIGH_CARD
-    }
+val getTypeForHandPart2 = { cards: List<Card> ->
+    if (Card.J in cards) {
+        val cardWithoutJokers = cards.filter { it != Card.J }
+        val jokersCount = 5 - cardWithoutJokers.size
+        Card.entries
+                .filter { it != Card.J }
+                .map { getTypeForHandPart1(cardWithoutJokers + generateSequence { it }.take(jokersCount)) }
+                .maxBy { it.strength }
+    } else getTypeForHandPart1(cards)
 }
 
 data class Hand(
@@ -57,41 +57,31 @@ data class Hand(
     val bid: Int,
     val type: HandType
 ) {
+    class HandComparator(val cardOrder: (Card) -> Int): Comparator<Hand> {
+
+        override fun compare(a: Hand, b: Hand): Int = when {
+            a.type.strength > b.type.strength -> 1
+            a.type.strength < b.type.strength -> -1
+            else -> compareWithCardsTo(a, b)
+        }
+
+        private fun compareWithCardsTo(a: Hand, b: Hand): Int {
+            for (i in a.cards.indices) {
+                if (cardOrder(a.cards[i]) > cardOrder(b.cards[i])) return 1
+                else if (cardOrder(a.cards[i]) < cardOrder(b.cards[i])) return -1
+            }
+            return 0
+        }
+    }
 
     companion object {
-        val comparatorPart1 = object : Comparator<Hand> {
 
-            override fun compare(a: Hand, b: Hand): Int = when {
-                a.type.strength > b.type.strength -> 1
-                a.type.strength < b.type.strength -> -1
-                else -> compareWithCardsTo(a, b)
-            }
+        private val cardOrderP1 = { card: Card -> card.orderP1 }
+        private val cardOrderP2 = { card: Card -> card.orderP2 }
 
-            private fun compareWithCardsTo(a: Hand, b: Hand): Int {
-                for (i in a.cards.indices) {
-                    if (a.cards[i].orderP1 > b.cards[i].orderP1) return 1
-                    else if (a.cards[i].orderP1 < b.cards[i].orderP1) return -1
-                }
-                return 0
-            }
-        }
+        val comparatorPart1 = HandComparator(cardOrderP1)
+        val comparatorPart2 = HandComparator(cardOrderP2)
 
-        val comparatorPart2 = object : Comparator<Hand> {
-
-            override fun compare(a: Hand, b: Hand): Int = when {
-                a.type.strength > b.type.strength -> 1
-                a.type.strength < b.type.strength -> -1
-                else -> compareWithCardsTo(a, b)
-            }
-
-            private fun compareWithCardsTo(a: Hand, b: Hand): Int {
-                for (i in a.cards.indices) {
-                    if (a.cards[i].orderP2 > b.cards[i].orderP2) return 1
-                    else if (a.cards[i].orderP2 < b.cards[i].orderP2) return -1
-                }
-                return 0
-            }
-        }
     }
 }
 
@@ -126,20 +116,12 @@ enum class Card(val orderP1: Int, val orderP2: Int) {
     }
 }
 
-class HandMapperP1: LineMapper<Hand> {
+class HandMapper(val handTypeCalculator: (List<Card>) -> HandType): LineMapper<Hand> {
     override fun map(line: String): Hand {
         val ls = line.split(" ")
         val bid = ls.last().toInt()
         val cards = ls.first().map { Card.fromChar(it) }
-        return Hand(cards, bid, getTypeForHandPart1(cards))
+        return Hand(cards, bid, handTypeCalculator(cards))
     }
 }
 
-class HandMapperP2: LineMapper<Hand> {
-    override fun map(line: String): Hand {
-        val ls = line.split(" ")
-        val bid = ls.last().toInt()
-        val cards = ls.first().map { Card.fromChar(it) }
-        return Hand(cards, bid, getTypeForHandPart2(cards))
-    }
-}
