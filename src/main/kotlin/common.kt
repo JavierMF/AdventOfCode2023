@@ -39,4 +39,4 @@ fun <T> getEntitiesByLine(args: Array<String>, mapper: LineMapper<T>): List<T> =
 fun <T> getEntitiesByLine(filePath: String, mapper: LineMapper<T>): List<T> =
     getNonBlankFileLines(filePath).map(mapper::map)
 
-fun Any.printIt() = this.also { println(it) }
+inline fun <reified T> T.printIt(): T = this.let { println(it); it }

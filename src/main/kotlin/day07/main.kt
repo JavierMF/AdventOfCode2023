@@ -1,4 +1,4 @@
-package template
+package day07
 
 // https://adventofcode.com/2023/day/7
 

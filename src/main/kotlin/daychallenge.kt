@@ -1,9 +1,10 @@
 import kotlin.time.measureTimedValue
 
 abstract class DayChallenge(
-    private val day: String,
-    private val part1SampleResult: Long,
-    private val part2SampleResult: Long? = null,
+        private val day: String,
+        private val part1SampleResult: Long,
+        private val part2SampleResult: Long? = null,
+        private val skipPart01: Boolean = false
 ) {
 
     abstract fun runPart1(filePath: String): Long
@@ -13,10 +14,16 @@ abstract class DayChallenge(
     private val problemFilePath = getFullFilePathFor("problem")
 
     fun run() {
-        checkPart("1", "sample", part1SampleResult, this::runPart1)
+        if (!skipPart01) {
+            checkPart("1", "sample", part1SampleResult, this::runPart1)
+        } else {
+            println("Skipping part 1")
+        }
 
         if (part2SampleResult != null) {
             checkPart("2", "sample2", part2SampleResult, this::runPart2)
+        } else {
+            println("No sample data for part 2")
         }
     }
 
@@ -30,6 +37,7 @@ abstract class DayChallenge(
         val sampleResult = resolver(partSampleFilePath)
         check(sampleResult == sampleSolution
         ) { "$sampleResult is not the expected $sampleSolution" }
+        println("Sample for part $partName is OK")
 
         val (partActualResult, elapsedPartResult) = measureTimedValue {
             resolver(problemFilePath)
