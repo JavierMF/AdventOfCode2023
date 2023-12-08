@@ -30,10 +30,10 @@ data class NavigationMap(
 
     private fun instructionPos(step: Long) = (step % instructionsSize).toInt()
 
-    fun navigateP1(): Long {
+    private fun navigate(startNode: Node, endingCondition: (Node) -> Boolean): Long {
         var steps = 0L
-        var currentNode = nodesById["AAA"]!!
-        while (currentNode.id != "ZZZ") {
+        var currentNode = startNode
+        while (!endingCondition(currentNode)) {
             val direction = instructions[instructionPos(steps)]
             val nextNodeId = currentNode.takeDirection(direction)
             currentNode = nodesById[nextNodeId]!!
@@ -43,26 +43,31 @@ data class NavigationMap(
         return steps
     }
 
-    fun navigateP2(): Long {
-        var steps = 0L
-        var currentNodes = nodesById.keys
-                .filter { it.endsWith("A") }
-                .map { nodesById[it]!! }
-                .printIt()
-        while (!currentNodes.allEndWithZ()) {
-            val direction = instructions[instructionPos(steps)]
-            currentNodes = currentNodes.map { it.takeDirection(direction) }
-                    .map { nodesById[it]!! }
-            steps += 1
-            /*if ((steps % 1000000L) == 0L) {
-                println("Step $steps - $currentNodes")
-            }*/
-        }
+    fun navigateP1(): Long = navigate(nodesById["AAA"]!!) { node -> node.id == "ZZZ" }
 
-        return steps
+
+    fun navigateP2(): Long {
+        val steps = nodes
+                .filter { it.id.endsWith("A") }
+                .map { navigate(it) { node -> node.id.endsWith("Z") } }
+        return findLCMOfListOfNumbers(steps)
     }
 
-    private fun List<Node>.allEndWithZ() = this.all { it.id.endsWith("Z") }
+    private fun findLCM(a: Long, b: Long): Long {
+        val larger = if (a > b) a else b
+        val maxLcm = a * b
+        var lcm = larger
+        while (lcm <= maxLcm) {
+            if (lcm % a == 0L && lcm % b == 0L) {
+                return lcm
+            }
+            lcm += larger
+        }
+        return maxLcm
+    }
+
+    private fun findLCMOfListOfNumbers(numbers: List<Long>): Long =
+        numbers.foldRight(numbers.first()){ acc, value -> findLCM(acc, value) }
 
 }
 
