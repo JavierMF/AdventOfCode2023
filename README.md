@@ -8,5 +8,6 @@ Here you can find my solutions (and also failed attempts) for [Advent of Code 20
 * [Day 6](./src/main/kotlin/day06/main.kt)
 * [Day 7](./src/main/kotlin/day07/main.kt)
 * [Day 8](./src/main/kotlin/day08/main.kt)
+* [Day 9](./src/main/kotlin/day09/main.kt)
 
 My solutions for [other](https://github.com/JavierMF/AdventOfCode2022) [years](https://github.com/JavierMF/AdventOfCode2020).
