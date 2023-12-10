@@ -22,6 +22,13 @@ data class Coords(val x: Int, val y: Int) {
                 .filter { it != this }
         }.toSet()
 
+    fun verticalNeighbours(): Set<Coords> = setOf(
+            this.moveTo(Direction.UP),
+            this.moveTo(Direction.DOWN),
+            this.moveTo(Direction.LEFT),
+            this.moveTo(Direction.RIGHT),
+    )
+
     private fun range(i: Int): Set<Int> = (i - 1 .. i + 1).toSet()
 
     fun neighboursInGrid(maxX: Int, maxY: Int): Set<Coords> = rangeInBounday(x, maxX)
@@ -33,10 +40,18 @@ data class Coords(val x: Int, val y: Int) {
     private fun rangeInBounday(i: Int, max: Int): Set<Int> = (i - 1..i + 1)
         .filter { it in 0..max }.toSet()
 
-    fun rightCoord(): Coords = Coords(x+1, y)
-    fun leftCoord(): Coords = Coords(x-1, y)
-    fun upCoord(): Coords = Coords(x, y-1)
-    fun downCoord(): Coords = Coords(x, y+1)
+    fun rightCoord(): Coords = moveTo(Direction.RIGHT)
+    fun leftCoord(): Coords = moveTo(Direction.LEFT)
+    fun upCoord(): Coords = moveTo(Direction.UP)
+    fun downCoord(): Coords = moveTo(Direction.DOWN)
+    fun moveTo(dir: Direction): Coords = Coords(x + dir.x, y + dir.y)
+}
+
+enum class Direction(val x: Int, val y: Int) {
+    UP(0, -1),
+    DOWN(0, 1),
+    RIGHT(1, 0),
+    LEFT(-1, 0)
 }
 
 data class Grid(
