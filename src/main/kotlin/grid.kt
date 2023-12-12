@@ -1,3 +1,5 @@
+import kotlin.math.abs
+
 data class Cell(val value: Char, val coords: Coords) {
     val isSymbol = value !in '0' .. '9'
 }
@@ -45,6 +47,8 @@ data class Coords(val x: Int, val y: Int) {
     fun upCoord(): Coords = moveTo(Direction.UP)
     fun downCoord(): Coords = moveTo(Direction.DOWN)
     fun moveTo(dir: Direction): Coords = Coords(x + dir.x, y + dir.y)
+
+    fun distanceTaxicabTo(other: Coords): Int = abs(x - other.x) + abs(y - other.y)
 }
 
 enum class Direction(val x: Int, val y: Int) {
