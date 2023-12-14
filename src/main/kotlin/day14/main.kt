@@ -26,6 +26,8 @@ object Day14Challenge: DayChallenge(
 
 data class Desert(val rocks: List<Cell>) {
     private val rocksByCoords: Map<Coords, Cell> = rocks.associateBy { it.coords }
+    private val cols = rocks.maxOf { it.coords.x }
+    private val rows = rocks.maxOf { it.coords.y }
 
     fun part1(): Long = this.moveTo(Direction.UP).rocksWeigth()
     fun part2(): Long {
@@ -35,6 +37,7 @@ data class Desert(val rocks: List<Cell>) {
                     .moveTo(Direction.LEFT)
                     .moveTo(Direction.DOWN)
                     .moveTo(Direction.RIGHT)
+            if ((it%100000) == 0) println(it)
         }
         return lastDesert.rocksWeigth()
     }
@@ -59,7 +62,7 @@ data class Desert(val rocks: List<Cell>) {
             if (!cell.isRoundRock()) cell
             else {
                 val targetCoords = cell.coords.moveTo(dir)
-                if (rocksByCoords.containsKey(targetCoords) || targetCoords.x < 0 || targetCoords.y < 0) {
+                if (rocksByCoords.containsKey(targetCoords) || targetCoords.outOfBounds()) {
                     cell
                 } else {
                     cell.copy(coords = targetCoords)
@@ -68,4 +71,7 @@ data class Desert(val rocks: List<Cell>) {
         }.let { Desert(it) }
 
     private fun Cell.isRoundRock(): Boolean = this.value == 'O'
+
+    private fun Coords.outOfBounds(): Boolean = this.x < 0 || this.y < 0
+            || this.x > cols || this.y > rows
 }
