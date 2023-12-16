@@ -51,11 +51,11 @@ data class Coords(val x: Int, val y: Int) {
     fun distanceTaxicabTo(other: Coords): Int = abs(x - other.x) + abs(y - other.y)
 }
 
-enum class Direction(val x: Int, val y: Int) {
-    UP(0, -1),
-    DOWN(0, 1),
-    RIGHT(1, 0),
-    LEFT(-1, 0)
+enum class Direction(val x: Int, val y: Int, val char:Char) {
+    UP(0, -1, '↑'),
+    DOWN(0, 1, '↓'),
+    RIGHT(1, 0, '→'),
+    LEFT(-1, 0, '←')
 }
 
 data class Grid(
