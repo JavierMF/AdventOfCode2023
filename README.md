@@ -15,5 +15,6 @@ Here you can find my solutions (and also failed attempts) for [Advent of Code 20
 * [Day 13](./src/main/kotlin/day13/main.kt)
 * [Day 14](./src/main/kotlin/day14/main.kt)
 * [Day 15](./src/main/kotlin/day15/main.kt)
+* [Day 16](./src/main/kotlin/day16/main.kt)
 
 My solutions for [other](https://github.com/JavierMF/AdventOfCode2022) [years](https://github.com/JavierMF/AdventOfCode2020).
