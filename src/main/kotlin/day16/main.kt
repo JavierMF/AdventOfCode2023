@@ -80,60 +80,65 @@ data class MirrorsMap(private val mirrors: List<Cell>) {
     private fun BeamHead.nextStep(): List<BeamHead> =
         when {
             !mirrorsByCoords.containsKey(this.coords) -> this.coords.buildBeamTo(this.direction)
+                    ?.let { listOf(it) } ?: emptyList()
             else -> mirrorsByCoords[this.coords]!!.applyBeam(this)
         }
 
     private fun Cell.applyBeam(beam: BeamHead): List<BeamHead> =
         when (this.value) {
-            '\\'       -> beam.applyLeftRightMirror(this.coords)
-            '/'        -> beam.applyRightLeftMirror(this.coords)
-            '-'        -> beam.applyHorizontalSplitter(this.coords)
-            '|'        -> beam.applyVerticalSplitter(this.coords)
+            '\\'       -> beam.applyToMirror(Mirror.LeftRightMirror)
+            '/'        -> beam.applyToMirror(Mirror.RightLeftMirror)
+            '-'        -> beam.applyToMirror(Mirror.HorizontalSplitter)
+            '|'        -> beam.applyToMirror(Mirror.VerticalSplitter)
             else -> emptyList<BeamHead>().also { println("What it is this? $this") }
         }
 
-    private fun BeamHead.applyLeftRightMirror(mirrorCoords: Coords): List<BeamHead> =
-            when (this.direction) {
-                Direction.RIGHT -> mirrorCoords.buildBeamTo(Direction.DOWN)
-                Direction.DOWN -> mirrorCoords.buildBeamTo(Direction.RIGHT)
-                Direction.LEFT -> mirrorCoords.buildBeamTo(Direction.UP)
-                Direction.UP -> mirrorCoords.buildBeamTo(Direction.LEFT)
-            }
+    private fun BeamHead.applyToMirror(mirror: Mirror): List<BeamHead> =
+            mirror.generatesTo(this.direction).mapNotNull { this.coords.buildBeamTo(it) }
 
-    private fun BeamHead.applyRightLeftMirror(mirrorCoords: Coords): List<BeamHead> =
-            when (this.direction) {
-                Direction.RIGHT -> mirrorCoords.buildBeamTo(Direction.UP)
-                Direction.DOWN -> mirrorCoords.buildBeamTo(Direction.LEFT)
-                Direction.LEFT -> mirrorCoords.buildBeamTo(Direction.DOWN)
-                Direction.UP -> mirrorCoords.buildBeamTo(Direction.RIGHT)
-            }
-
-    private fun BeamHead.applyHorizontalSplitter(mirrorCoords: Coords): List<BeamHead> =
-            when (this.direction) {
-                Direction.RIGHT -> mirrorCoords.buildBeamTo(Direction.RIGHT)
-                Direction.DOWN -> mirrorCoords.buildBeamTo(Direction.RIGHT) + mirrorCoords.buildBeamTo(Direction.LEFT)
-                Direction.LEFT -> mirrorCoords.buildBeamTo(Direction.LEFT)
-                Direction.UP -> mirrorCoords.buildBeamTo(Direction.RIGHT) + mirrorCoords.buildBeamTo(Direction.LEFT)
-            }
-
-    private fun BeamHead.applyVerticalSplitter(mirrorCoords: Coords): List<BeamHead> =
-            when (this.direction) {
-                Direction.RIGHT -> mirrorCoords.buildBeamTo(Direction.UP) + mirrorCoords.buildBeamTo(Direction.DOWN)
-                Direction.DOWN -> mirrorCoords.buildBeamTo(Direction.DOWN)
-                Direction.LEFT -> mirrorCoords.buildBeamTo(Direction.UP) + mirrorCoords.buildBeamTo(Direction.DOWN)
-                Direction.UP -> mirrorCoords.buildBeamTo(Direction.UP)
-            }
-
-    private fun Coords.buildBeamTo(direction: Direction): List<BeamHead> =
+    private fun Coords.buildBeamTo(direction: Direction): BeamHead? =
             this.moveTo(direction).let { newCoords ->
-                if (newCoords.outOfBounds()) emptyList()
-                else listOf(BeamHead(direction, newCoords))
+                if (newCoords.outOfBounds()) null
+                else BeamHead(direction, newCoords)
             }
 
     private fun Coords.outOfBounds() =
             x< 0 || x > maxColIndex ||
                     y < 0 || y > maxRowIndex
 
+}
+
+enum class Mirror(private val mapping: Map<Direction, Set<Direction>>) {
+    // '\'
+    LeftRightMirror(mapOf(
+            Direction.RIGHT to setOf(Direction.DOWN),
+            Direction.DOWN to setOf(Direction.RIGHT),
+            Direction.LEFT to setOf(Direction.UP),
+            Direction.UP to setOf(Direction.LEFT),
+    )),
+    // '/'
+    RightLeftMirror(mapOf(
+            Direction.RIGHT to setOf(Direction.UP),
+            Direction.DOWN to setOf(Direction.LEFT),
+            Direction.LEFT to setOf(Direction.DOWN),
+            Direction.UP to setOf(Direction.RIGHT),
+    )),
+    // '-'
+    HorizontalSplitter(mapOf(
+            Direction.RIGHT to setOf(Direction.RIGHT),
+            Direction.DOWN to setOf(Direction.RIGHT, Direction.LEFT),
+            Direction.LEFT to setOf(Direction.LEFT),
+            Direction.UP to setOf(Direction.RIGHT, Direction.LEFT),
+    )),
+    // '|'
+    VerticalSplitter(mapOf(
+            Direction.RIGHT to setOf(Direction.UP, Direction.DOWN),
+            Direction.DOWN to setOf(Direction.DOWN),
+            Direction.LEFT to setOf(Direction.UP, Direction.DOWN),
+            Direction.UP to setOf(Direction.UP),
+    ));
+
+    fun generatesTo(dir: Direction): Set<Direction> = mapping[dir]!!
 }
 
 data class BeamHead(val direction: Direction, val coords: Coords)
