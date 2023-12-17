@@ -55,7 +55,15 @@ enum class Direction(val x: Int, val y: Int, val char:Char) {
     UP(0, -1, '↑'),
     DOWN(0, 1, '↓'),
     RIGHT(1, 0, '→'),
-    LEFT(-1, 0, '←')
+    LEFT(-1, 0, '←');
+
+    fun opposite(): Direction =
+            when(this) {
+                UP -> DOWN
+                DOWN -> UP
+                LEFT -> RIGHT
+                RIGHT -> LEFT
+            }
 }
 
 data class Grid(
